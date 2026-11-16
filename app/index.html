@@ -2,6 +2,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#F3EADA">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Todavía">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="robots" content="noindex">
@@ -200,7 +201,7 @@ const D={"meses": ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio
 const KEY="todavia2027.v1";
 let S={};
 try{S=JSON.parse(localStorage.getItem(KEY)||"{}")||{}}catch(e){S={}}
-const def={name:"",days:{},months:{},weeks:{},habits:["","","","",""],guide:{},goals:[{},{},{},{},{}],dreams:[],wheel:{},wheelGoal:{},pv:[],cierre:{},ob:{},atiempo:{}};
+const def={name:"",days:{},months:{},weeks:{},habits:["","","","",""],guide:{},goals:[{},{},{},{},{}],dreams:[],wheel:{},wheelGoal:{},pv:[],cierre:{},ob:{},atiempo:{},lastBackup:0};
 for(const k in def){if(S[k]===undefined)S[k]=JSON.parse(JSON.stringify(def[k]))}
 let saveT;
 function save(){clearTimeout(saveT);saveT=setTimeout(()=>{try{localStorage.setItem(KEY,JSON.stringify(S));flash()}catch(e){flash("No se pudo guardar en este navegador")}},350)}
@@ -223,6 +224,10 @@ function setAcc(m){const r=document.documentElement.style;r.setProperty("--acc",
 function realToday(){return new Date()}
 function inYear(d){return d.getFullYear()===YEAR}
 function focusDate(){const t=realToday();return inYear(t)?t:new Date(YEAR,0,1)}
+function isApp(){try{return window.matchMedia("(display-mode: standalone)").matches||navigator.standalone===true}catch(e){return false}}
+function anyData(){return Object.keys(S.days).some(dayHas)||S.goals.some(g=>g&&g.meta)||S.habits.some(Boolean)}
+const RULES=[["Ábrela siempre desde el ícono","Instálala una vez en tu pantalla de inicio y entra siempre desde ahí. Si la abres desde otro lugar (Instagram, el correo, Hotmart) vas a ver una agenda vacía."],["Se guarda sola","No hay botón de guardar. Todo lo que escribes queda guardado en tu teléfono al instante. Es privado: nadie más lo ve."],["Haz un respaldo una vez por mes","Si cambias de teléfono o se borra el navegador, el respaldo te devuelve tus notas. Está en Mi espacio."]];
+function rulesCard(btn){return `<div class="card stack"><span class="eyebrow">Tres cosas para empezar bien</span>${RULES.map((r,i)=>`<div class="num" style="align-items:start"><span style="padding:0">${i+1}</span><div><h3>${r[0]}</h3><p class="small muted" style="margin:0">${r[1]}</p></div></div>`).join("")}<div class="row">${btn?`<button class="btn acc sm" id="okWelcome">Entendido</button>`:""}<a class="pill" href="#ayuda">Ver la guía completa ›</a></div></div>`}
 function dayHas(k){const d=S.days[k];if(!d)return false;return !!((d.p||[]).some(Boolean)||(d.t||[]).some(x=>x&&x.x)||d.n||d.g)}
 
 /* ---- campos ---- */
@@ -250,7 +255,7 @@ const IC={
  bonos:'<svg viewBox="0 0 24 24"><rect x="3.5" y="9" width="17" height="11.5" rx="2"/><path d="M3.5 13h17M12 9v11.5M12 9c-1.5-3.6-6-4-6-1.2C6 9 9 9 12 9zm0 0c1.5-3.6 6-4 6-1.2C18 9 15 9 12 9z"/></svg>',
  mas:'<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.8-3.6 3.6-5.5 7-5.5s6.2 1.9 7 5.5"/></svg>'};
 const TABS=[["hoy","Hoy"],["calendario","Agenda"],["guia","Guía"],["bonos","Bonos"],["mas","Mi espacio"]];
-function tabFor(r){if(/^(calendario|mes|dia|semana)/.test(r))return"calendario";if(/^(guia|cap|bienvenida)/.test(r))return"guia";if(/^(bonos|atiempo|metas|tracker|rueda)/.test(r))return"bonos";if(/^(mas|primeras|cierre|respaldo|instalar)/.test(r))return"mas";return"hoy"}
+function tabFor(r){if(/^(calendario|mes|dia|semana)/.test(r))return"calendario";if(/^(guia|cap|bienvenida)/.test(r))return"guia";if(/^(bonos|atiempo|metas|tracker|rueda)/.test(r))return"bonos";if(/^(mas|primeras|cierre|respaldo|instalar|ayuda)/.test(r))return"mas";return"hoy"}
 function drawTabs(r){const on=tabFor(r);document.getElementById("tabs").innerHTML=TABS.map(([k,l])=>`<a href="#${k}" class="${k===on?"on":""}" ${k===on?'aria-current="page"':""}>${IC[k]}<span>${l}</span></a>`).join("")}
 
 /* ---- vistas ---- */
@@ -266,6 +271,9 @@ V.hoy=()=>{const t=realToday(),f=focusDate(),m=f.getMonth();setAcc(m);
   const left=obDone.filter(x=>!x).length;
   return `<div class="hero" style="background-image:url(${img(D.mesImg[m])})"></div>
   <div class="wrap"><div class="head"><span class="eyebrow">${D.meses[m]} ${YEAR}</span><h1>Hola${name}.</h1><p class="lead muted">${D.frases[m]}</p></div>
+  ${!S.ob.welcome?`<div class="section">${rulesCard(true)}</div>`:""}
+  ${!isApp()?`<div class="section"><a class="card tint" href="#instalar" style="text-decoration:none;display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center"><span><span class="eyebrow">Paso importante</span><b style="display:block;font-family:var(--serif);font-weight:500;font-size:19px;margin-top:2px">Guarda tu agenda en la pantalla de inicio</b><span class="small muted">Así la abres con un toque, como cualquier app.</span></span><span class="chev">›</span></a></div>`:""}
+  ${anyData()&&(Date.now()-(S.lastBackup||0))>30*864e5?`<div class="section"><a class="card" href="#respaldo" style="text-decoration:none;display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center"><span><span class="eyebrow" style="color:var(--oxido)">Recordatorio</span><b style="display:block;font-family:var(--serif);font-weight:500;font-size:19px;margin-top:2px">Haz el respaldo de tus notas</b><span class="small muted">${S.lastBackup?"Pasó más de un mes desde el último.":"Todavía no hiciste ninguno."} Toma un minuto.</span></span><span class="chev">›</span></a></div>`:""}
   ${!inYear(t)&&days>0?`<div class="section"><div class="banner"><span class="eyebrow" style="color:#F3C9BC">Tu año empieza el 1 de enero</span><span class="big">Faltan ${days} días</span><p style="margin:0">Mientras tanto, prepara tu 2027 con la guía y los bonos. Tu agenda ya está lista para anotar.</p></div></div>`:""}
   ${left?`<div class="section"><h2>Para empezar</h2><div class="card steps-ob">${ob.map((o,i)=>`<a href="#${o[1]}"><span class="dot ${obDone[i]?"ok":""}">${obDone[i]?"✓":i+1}</span><span><b style="font-weight:500">${o[0]}</b><span class="small muted" style="display:block">${o[2]}</span></span><span class="chev">›</span></a>`).join("")}</div></div>`:""}
   <div class="section"><div class="head-row"><h2>${inYear(t)?"Hoy":"Tu primer día"}</h2><a class="pill" href="#dia-${k}">Abrir día ›</a></div>
@@ -336,6 +344,7 @@ V.guia=()=>{setAcc(0);return `<div class="hero" style="background-image:url(${im
 function capProgress(c){const ks=c.blocks.filter(b=>b.t==="ex"&&b.field!=="none").map(b=>b.k);if(!ks.length)return"Lectura";const done=ks.filter(k=>{const v=S.guide[k];return v&&(typeof v==="string"?v.trim():JSON.stringify(v).replace(/[\[\]{}",:0-9]/g,"").trim())}).length;return `${done} de ${ks.length} ejercicios`}
 V.bienvenida=()=>{setAcc(0);S.ob.bienvenida=true;save();return `<div class="hero" style="background-image:url(${img("19")})"><a class="iconbtn back" href="#guia" aria-label="Volver a la guía">‹</a></div><div class="wrap"><div class="head"><span class="eyebrow">Bienvenida</span><h1>Todavía.</h1></div>
  <div class="section"><p class="lead">${D.bienvenida[0]}</p>${D.bienvenida.slice(1).map(p=>`<p>${p}</p>`).join("")}<p class="lead">Todavía hay tiempo. <em style="color:var(--oxido)">Organízalo.</em></p>
+ ${rulesCard(false)}
  <a class="btn acc" href="#cap-1">Empezar el capítulo 1</a></div></div>`};
 V.cap=(n)=>{const c=D.caps.find(x=>x.n===Number(n))||D.caps[0];setAcc([0,3,1,6,4,8][c.n-1]);
   const body=c.blocks.map(b=>block(b)).join("");const nx=D.caps.find(x=>x.n===c.n+1);
@@ -404,6 +413,7 @@ function drawWheel(){const svg=document.getElementById("wheel");if(!svg)return;c
 V.mas=()=>{setAcc(1);return `<div class="wrap"><div class="head" style="padding-top:26px"><span class="eyebrow" style="color:var(--muted)">Mi espacio</span><h1>Tu agenda, a tu manera</h1></div>
  <div class="section"><div class="card">${labeled("¿Cómo te llamo?","name","Tu nombre")}</div></div>
  <div class="section"><div class="list">
+  <a href="#ayuda"><span class="ix">?</span><span class="tt">Cómo usar tu app<span class="sub">Guía paso a paso, sin apuro</span></span><span class="chev">›</span></a>
   <a href="#primeras"><span class="ix">✦</span><span class="tt">Mis primeras veces 2027<span class="sub">Doce cosas que harás por primera vez</span></span><span class="chev">›</span></a>
   <a href="#cierre"><span class="ix">✦</span><span class="tt">Cierre del año<span class="sub">Lo que sí hice en 2027</span></span><span class="chev">›</span></a>
   <a href="#instalar"><span class="ix">✦</span><span class="tt">Tenerla en mi pantalla de inicio<span class="sub">Ábrela como una app</span></span><span class="chev">›</span></a>
@@ -414,13 +424,31 @@ V.primeras=()=>{setAcc(0);let h="";for(let i=0;i<12;i++)h+=`<div class="card sta
 V.cierre=()=>{setAcc(11);return `<div class="hero short" style="background-image:url(${img("14")});background-position:62% 30%;background-size:220%"><a class="iconbtn back" href="#mas" aria-label="Volver">‹</a></div><div class="wrap"><div class="head"><span class="eyebrow">Cierre del año</span><h1>Lo que sí hice en 2027</h1></div>
  <div class="section"><div class="card stack">${D.cierre.map((q,i)=>labeled(q,`cierre.${i}`,"",{area:true,rows:3})).join("")}</div><div class="card"><span class="label">Mi lista de «algún día» para 2028</span>${numList("cierre.l",10,"")}</div>
  <p class="lead">${esc(D.final)}</p><p class="lead">Todavía hay tiempo. <em style="color:var(--oxido)">Y ahora está organizado.</em></p></div></div>`};
-V.instalar=()=>{setAcc(1);return `<div class="wrap"><div class="head" style="padding-top:18px"><a class="iconbtn" href="#mas" aria-label="Volver">‹</a><h1 style="margin-top:8px">Tenerla en tu pantalla de inicio</h1><p class="muted" style="margin:0">Así se abre con su propio ícono, como cualquier app.</p></div>
- <div class="section"><div class="card stack"><h3>En iPhone (Safari)</h3><ol style="margin:0;padding-left:20px"><li>Abre el enlace de tu agenda en Safari.</li><li>Toca el botón Compartir, el cuadrado con la flecha hacia arriba.</li><li>Elige «Agregar a pantalla de inicio» y toca «Agregar».</li></ol></div>
- <div class="card stack"><h3>En Android (Chrome)</h3><ol style="margin:0;padding-left:20px"><li>Abre el enlace de tu agenda en Chrome.</li><li>Toca el menú de tres puntos arriba a la derecha.</li><li>Elige «Instalar app» o «Agregar a pantalla de inicio».</li></ol></div>
+V.instalar=()=>{setAcc(1);return `<div class="wrap"><div class="head" style="padding-top:18px"><a class="iconbtn" href="#mas" aria-label="Volver">‹</a><h1 style="margin-top:8px">Tenerla en tu pantalla de inicio</h1><p class="muted" style="margin:0">Así se abre con su propio ícono, como cualquier app. Se hace una sola vez.</p>${isApp()?`<div class="card tint" style="margin-top:10px"><b>¡Listo! Ya la estás usando desde el ícono.</b></div>`:""}</div>
+ <div class="section"><div class="card stack"><h3>En iPhone (Safari)</h3><ol style="margin:0;padding-left:20px"><li>Abre el enlace de tu agenda en Safari.</li><li>Toca el botón Compartir, el cuadrado con la flecha hacia arriba.</li><li>Elige «Agregar a pantalla de inicio». Si no la ves, desliza la lista hacia arriba: está más abajo.</li><li>Toca «Agregar», arriba a la derecha.</li><li>Busca el ícono de Todavía en tu pantalla de inicio y ábrela desde ahí.</li></ol><p class="small muted" style="margin:0">Importante: tiene que ser en Safari. Si abriste el enlace desde Instagram o el correo, toca los tres puntos o el ícono de brújula y elige «Abrir en Safari».</p></div>
+ <div class="card stack"><h3>En Android (Chrome)</h3><ol style="margin:0;padding-left:20px"><li>Abre el enlace de tu agenda en Chrome.</li><li>Toca el menú de tres puntos arriba a la derecha.</li><li>Elige «Instalar app» o «Agregar a pantalla de inicio».</li><li>Confirma tocando «Instalar» o «Agregar».</li><li>Busca el ícono de Todavía entre tus apps y ábrela desde ahí.</li></ol><p class="small muted" style="margin:0">Si abriste el enlace desde Instagram o el correo, toca los tres puntos y elige «Abrir en Chrome».</p></div>
  <p class="small muted">Usa siempre el mismo navegador: tus notas se guardan ahí.</p></div></div>`};
-V.respaldo=()=>{setAcc(1);return `<div class="wrap"><div class="head" style="padding-top:18px"><a class="iconbtn" href="#mas" aria-label="Volver">‹</a><h1 style="margin-top:8px">Respaldo de tus notas</h1><p class="muted" style="margin:0">Tus notas viven en este teléfono. Haz un respaldo de vez en cuando, o antes de cambiar de teléfono.</p></div>
+V.respaldo=()=>{setAcc(1);return `<div class="wrap"><div class="head" style="padding-top:18px"><a class="iconbtn" href="#mas" aria-label="Volver">‹</a><h1 style="margin-top:8px">Respaldo de tus notas</h1><p class="muted" style="margin:0">Tus notas viven en este teléfono. Haz un respaldo una vez por mes, y siempre antes de cambiar de teléfono.</p>${S.lastBackup?`<p class="small" style="margin:6px 0 0">Último respaldo: ${new Date(S.lastBackup).toLocaleDateString("es")}</p>`:""}</div>
  <div class="section"><div class="card stack"><h3>1 · Copiar mi respaldo</h3><p class="small muted" style="margin:0">Copia todas tus notas como un texto. Pégalo en un mensaje para ti misma, en tu correo o en tus notas.</p><button class="btn acc" id="copyBk">Copiar mi respaldo</button><textarea class="field" id="bkOut" rows="3" readonly aria-label="Texto del respaldo" hidden></textarea></div>
  <div class="card stack"><h3>2 · Recuperar mis notas</h3><p class="small muted" style="margin:0">Pega aquí el texto de un respaldo y toca Recuperar. Reemplaza lo que hay ahora en este teléfono.</p><textarea class="field" id="bkIn" rows="3" placeholder="Pega aquí tu respaldo" aria-label="Pegar respaldo"></textarea><button class="btn ghost" id="restoreBk">Recuperar</button><p class="small" id="bkMsg" role="status"></p></div></div></div>`};
+
+V.ayuda=()=>{setAcc(1);const Q=(t,b)=>`<details class="goal"><summary><span class="gi">?</span><span class="gt" style="white-space:normal">${t}</span><span class="chev">›</span></summary><div class="gb"><p style="margin:0">${b}</p></div></details>`;
+ const tabs=[["Hoy","Lo que haces cada día: tus tres prioridades, lo que agradeces y tus hábitos."],["Agenda","Tu año 2027. Toca un mes y después un día para escribir. Los días con un punto ya tienen algo anotado."],["Guía","Los seis capítulos para preparar tu año, con ejercicios para completar aquí mismo."],["Bonos","Tus cuatro regalos: Todavía estás a tiempo, Metas y sueños, Hábitos y gratitud, y Rueda de la vida."],["Mi espacio","Tu nombre, tus primeras veces, el cierre del año, cómo instalarla y el respaldo."]];
+ return `<div class="wrap"><div class="head" style="padding-top:18px"><a class="iconbtn" href="#mas" aria-label="Volver">‹</a><span class="eyebrow" style="margin-top:8px">Guía de uso</span><h1>Cómo usar tu app</h1><p class="lead muted" style="margin:0">Paso a paso y sin apuro. Puedes volver a esta página cuando quieras desde Mi espacio.</p></div>
+ <div class="section"><h2>Lo más importante</h2>${rulesCard(false)}</div>
+ <div class="section"><h2>1 · Guárdala en tu pantalla de inicio</h2><p>Se hace una sola vez. Después la abres tocando su ícono, como WhatsApp o la cámara.</p><a class="btn acc" href="#instalar">Ver cómo instalarla</a></div>
+ <div class="section"><h2>2 · Conoce la barra de abajo</h2><p>Abajo de la pantalla siempre ves cinco botones. Tócalos para ir de una sección a otra.</p><div class="list">${tabs.map(t=>`<div style="display:grid;grid-template-columns:1fr;gap:2px;padding:14px 16px;border-top:1px solid var(--line)"><b style="font-family:var(--serif);font-weight:500;font-size:18px">${t[0]}</b><span class="small muted">${t[1]}</span></div>`).join("")}</div></div>
+ <div class="section"><h2>3 · Escribe tu día</h2><ol style="margin:0;padding-left:22px;display:flex;flex-direction:column;gap:8px"><li>Toca <b>Hoy</b> en la barra de abajo.</li><li>Toca la línea que dice <b>Prioridad</b>. Aparece el teclado. Escribe.</li><li>Cuando termines, toca fuera del texto. Ya está guardado: verás un aviso que dice <b>Guardado</b>.</li><li>Para agregar tareas o notas, toca <b>Abrir día</b>.</li><li>Para tachar una tarea hecha, toca el cuadradito a su izquierda.</li></ol></div>
+ <div class="section"><h2>4 · Encuentra lo que escribiste</h2><ol style="margin:0;padding-left:22px;display:flex;flex-direction:column;gap:8px"><li>Toca <b>Agenda</b>.</li><li>Toca el mes. Los días con un <b>punto de color</b> tienen notas.</li><li>Toca el día para verlo completo.</li><li>Para ver la semana entera, toca una de las semanas debajo del calendario.</li></ol></div>
+ <div class="section"><h2>5 · Tu rutina recomendada</h2><div class="card stack"><div><b>Cada mañana · 2 minutos</b><p class="small muted" style="margin:0">Tres prioridades del día.</p></div><div><b>Cada noche · 1 minuto</b><p class="small muted" style="margin:0">Tacha lo hecho, marca tus hábitos y escribe una gratitud.</p></div><div><b>Cada domingo · 10 minutos</b><p class="small muted" style="margin:0">Abre la semana que viene y escribe tu paso hacia tu meta.</p></div><div><b>Fin de mes · 15 minutos</b><p class="small muted" style="margin:0">Revisión del mes y respaldo de tus notas.</p></div></div></div>
+ <div class="section"><h2>Preguntas frecuentes</h2>
+ ${Q("Abrí la app y está vacía. ¿Perdí todo?","Seguramente la abriste desde otro lugar: Instagram, el correo, Hotmart u otro navegador. Cierra esa ventana y entra desde el ícono de tu pantalla de inicio. Si aun así no ves tus notas, usa tu último respaldo en Mi espacio.")}
+ ${Q("¿Necesito internet?","Solo la primera vez que la abres. Después funciona también sin conexión.")}
+ ${Q("¿Alguien puede ver lo que escribo?","No. Tus notas quedan solo en tu teléfono. Ni siquiera nosotras podemos verlas.")}
+ ${Q("Voy a cambiar de teléfono. ¿Qué hago?","En el teléfono viejo: Mi espacio → Respaldo → Copiar mi respaldo, y mándatelo por WhatsApp o correo. En el teléfono nuevo: instala la app, ve a Mi espacio → Respaldo, pega el texto y toca Recuperar.")}
+ ${Q("¿Puedo usarla en la computadora?","Sí, abriendo el mismo enlace. Pero lo que escribas en la computadora no aparece en el teléfono, y al revés. Te recomendamos usar un solo dispositivo.")}
+ ${Q("Borré algo sin querer. ¿Lo puedo recuperar?","Solo si lo tenías en un respaldo. Por eso conviene hacer uno al final de cada mes.")}
+ </div></div>`};
 
 /* ---- router ---- */
 function route(){const h=(location.hash||"#hoy").slice(1);const m=h.match(/^([a-z]+)(?:-(.+))?$/);let name=m?m[1]:"hoy",arg=m?m[2]:undefined;if(!V[name]){name="hoy";arg=undefined}
@@ -428,8 +456,9 @@ function route(){const h=(location.hash||"#hoy").slice(1);const m=h.match(/^([a-
  v.querySelectorAll("textarea.field").forEach(grow);drawWheel();window.scrollTo(0,0);
  const at=document.getElementById("addTask");if(at)at.onclick=()=>{const k=iso(parse(arg)||focusDate());const arr=getP(`days.${k}.t`)||[];arr.push({x:"",d:false});setP(`days.${k}.t`,arr);const box=document.getElementById("tasks");box.insertAdjacentHTML("beforeend",taskRow(k,arr.length-1,{}));box.lastElementChild.querySelector("input.field").focus()};
  const tb=document.getElementById("tasks");if(tb)tb.onclick=e=>{const b=e.target.closest("[data-del]");if(!b)return;const k=iso(parse(arg));const arr=getP(`days.${k}.t`)||[];arr.splice(Number(b.dataset.del),1);setP(`days.${k}.t`,arr);tb.innerHTML=arr.map((t,i)=>taskRow(k,i,t)).join("")};
+ const ow=document.getElementById("okWelcome");if(ow)ow.onclick=()=>{S.ob.welcome=true;save();route()};
  const na=document.getElementById("nextAff");if(na){let i=0;na.onclick=()=>{i=(i+1)%D.afirm.length;document.getElementById("affirm").textContent=D.afirm[i]}}
- const cb=document.getElementById("copyBk");if(cb)cb.onclick=()=>{const txt="TODAVIA2027:"+btoa(unescape(encodeURIComponent(JSON.stringify(S))));const out=document.getElementById("bkOut");out.value=txt;out.hidden=false;
+ const cb=document.getElementById("copyBk");if(cb)cb.onclick=()=>{const txt="TODAVIA2027:"+btoa(unescape(encodeURIComponent(JSON.stringify(S))));const out=document.getElementById("bkOut");out.value=txt;out.hidden=false;S.lastBackup=Date.now();save();
    (navigator.clipboard?navigator.clipboard.writeText(txt):Promise.reject()).then(()=>{cb.textContent="Copiado. Pégalo donde quieras guardarlo"}).catch(()=>{out.select();cb.textContent="Mantén presionado el texto de abajo para copiarlo"})};
  const rb=document.getElementById("restoreBk");if(rb)rb.onclick=()=>{const msg=document.getElementById("bkMsg");try{let t=document.getElementById("bkIn").value.trim();if(t.startsWith("TODAVIA2027:"))t=t.slice(12);const o=JSON.parse(decodeURIComponent(escape(atob(t))));if(!o||typeof o!=="object"||!o.days)throw 0;S=o;for(const k in def)if(S[k]===undefined)S[k]=JSON.parse(JSON.stringify(def[k]));save();msg.textContent="Listo: recuperamos tus notas."}catch(e){msg.textContent="Ese texto no es un respaldo válido. Revisa que lo hayas pegado completo."}};
  document.title=name==="hoy"?"Todavía 2027":`${document.getElementById("view").querySelector("h1")?.textContent||""} · Todavía 2027`;
