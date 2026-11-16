@@ -26,6 +26,7 @@
   // Todos los botones de compra apuntan al checkout y envían InitiateCheckout al Píxel de Meta
   var buttons = document.querySelectorAll('.js-buy');
   var overlayReady = false;
+  var hotmartLink = null;
 
   function checkoutUrl(overlay) {
     var url = new URL(CHECKOUT_URL);
@@ -51,8 +52,8 @@
         });
       }
       if (window.dataLayer) window.dataLayer.push({ event: 'begin_checkout', cta: a.dataset.cta });
-      // Con el widget cargado, Hotmart abre el pago en una ventana sobre la página
-      if (overlayReady) e.preventDefault();
+      // Con el widget cargado, el pago se abre en una ventana sobre la página
+      if (overlayReady && hotmartLink) { e.preventDefault(); hotmartLink.click(); }
     });
   });
 
@@ -61,7 +62,16 @@
   function loadHotmart() {
     if (!hasCheckout || !HOTMART_OVERLAY || loadHotmart.done) return;
     loadHotmart.done = true;
-    buttons.forEach(function (a) { a.classList.add('hotmart-fb'); a.href = checkoutUrl(true); });
+    // Enlace propio de Hotmart, invisible: el widget actúa solo sobre él y no toca los botones del diseño
+    hotmartLink = document.createElement('a');
+    hotmartLink.className = 'hotmart-fb hotmart__button-checkout';
+    hotmartLink.href = checkoutUrl(true);
+    hotmartLink.textContent = 'Comprar ahora';
+    hotmartLink.setAttribute('aria-hidden', 'true');
+    hotmartLink.tabIndex = -1;
+    hotmartLink.onclick = function () { return false; };
+    hotmartLink.style.cssText = 'position:fixed;left:-9999px;top:0;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none';
+    document.body.appendChild(hotmartLink);
     var css = document.createElement('link');
     css.rel = 'stylesheet';
     css.href = 'https://static.hotmart.com/css/hotmart-fb.min.css';
@@ -70,9 +80,7 @@
     s.src = 'https://static.hotmart.com/checkout/widget.min.js';
     s.async = true;
     s.onload = function () { overlayReady = true; };
-    s.onerror = function () {
-      buttons.forEach(function (a) { a.classList.remove('hotmart-fb'); a.href = checkoutUrl(false); });
-    };
+    s.onerror = function () { overlayReady = false; };
     document.head.appendChild(s);
   }
   if (hasCheckout && HOTMART_OVERLAY) {
