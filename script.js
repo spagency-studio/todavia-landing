@@ -4,8 +4,8 @@
 
   // ====== CONFIGURACIÓN: edita solo estas líneas ======
   var CHECKOUT_URL = '[LINK DE CHECKOUT]';      // p. ej. https://pay.hotmart.com/XXXX
-  var LAUNCH_PRICE = 9.99;
-  var REGULAR_PRICE = 14;
+  var LAUNCH_PRICE = 5;
+  var REGULAR_PRICE = 10;
   // El lanzamiento termina al final del 31/12/2026 (hora de Ciudad de México, la más occidental de las grandes ciudades de la región).
   var LAUNCH_ENDS = new Date('2027-01-01T06:00:00Z');
   // =====================================================
