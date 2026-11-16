@@ -1,0 +1,442 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#F3EADA">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Todavía">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="robots" content="noindex">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-192.png">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}</style>
+<title>Todavía 2027</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,400&display=swap">
+<style>
+/* Agenda de papel hecha app: hojas crema, tinta índigo y el color de cada mes. Una columna, barra inferior para el pulgar. */
+:root{
+  --paper:#F3EADA; --card:#FBF6EC; --sunk:#EADFCB;
+  --ink:#1F2438; --muted:#5F574C; --rule:#D6C8AF; --line:#E4D8C3;
+  --indigo:#163F7A; --bermellon:#D63A22; --oxido:#A8391C; --ocre:#9A6A12; --oliva:#5E5B26; --rosa:#F2DED4;
+  --acc:#163F7A; --acc-pale:#DDE3EC;
+  --serif:"Newsreader",Georgia,"Times New Roman",serif;
+  --sans:"DM Sans","Helvetica Neue",Arial,sans-serif;
+  --nav:64px;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.5;-webkit-tap-highlight-color:transparent}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--paper);z-index:20}
+button,input,textarea,select{font:inherit;color:inherit}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px;border-radius:4px}
+.app{max-width:560px;margin:0 auto;min-height:100%;padding-bottom:calc(var(--nav) + env(safe-area-inset-bottom,0px) + 24px)}
+.wrap{padding-left:max(18px,env(safe-area-inset-left,0px));padding-right:max(18px,env(safe-area-inset-right,0px))}
+
+/* tipografía */
+.eyebrow{font-size:11.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--acc)}
+h1,h2,h3{font-family:var(--serif);font-weight:400;text-wrap:balance;margin:0}
+h1{font-size:40px;line-height:1.02;letter-spacing:-.025em}
+h2{font-size:27px;line-height:1.1;letter-spacing:-.015em}
+h3{font-size:19px;line-height:1.25;font-weight:500}
+p{margin:0 0 12px;text-wrap:pretty}
+.muted{color:var(--muted)}
+.lead{font-family:var(--serif);font-size:19px;line-height:1.45}
+.small{font-size:13.5px}
+
+/* encabezados con imagen */
+.hero{position:relative;height:210px;background:var(--sunk) center/cover no-repeat;border-bottom:3px solid var(--acc)}
+.hero.short{height:120px}
+.hero .back{position:absolute;left:max(12px,env(safe-area-inset-left,0px));top:12px}
+.head{padding-top:20px;padding-bottom:6px;display:flex;flex-direction:column;gap:6px}
+.head-row{display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
+
+/* bloques */
+.stack{display:flex;flex-direction:column;gap:14px}
+.section{margin-top:22px;display:flex;flex-direction:column;gap:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
+.card.tint{background:var(--acc-pale);border-color:transparent}
+.pull{font-family:var(--serif);font-size:18px;line-height:1.45;background:var(--rosa);border-radius:14px;padding:16px 18px}
+.label{display:block;font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.field{width:100%;border:0;border-bottom:1px solid var(--rule);background:transparent;padding:10px 2px;font-size:16px;border-radius:0}
+.field:focus{outline:none;border-bottom-color:var(--acc);border-bottom-width:2px}
+textarea.field{resize:none;min-height:46px;line-height:1.5;overflow:hidden}
+.num{display:grid;grid-template-columns:28px 1fr;align-items:end;gap:8px}
+.num>span{font-family:var(--serif);font-size:18px;color:var(--acc);padding-bottom:9px}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+.btn{appearance:none;border:0;border-radius:12px;padding:13px 16px;font-weight:600;font-size:15px;background:var(--ink);color:#F8F2E6;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--rule)}
+.btn.acc{background:var(--acc)}
+.btn.sm{min-height:38px;padding:8px 12px;font-size:14px}
+.pill{appearance:none;border:1px solid var(--rule);background:var(--card);border-radius:999px;padding:8px 14px;font-size:14px;font-weight:500;text-decoration:none;color:var(--ink);display:inline-flex;align-items:center;gap:6px;min-height:40px;cursor:pointer}
+.iconbtn{appearance:none;border:0;background:rgba(251,246,236,.92);color:var(--ink);width:42px;height:42px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:20px;text-decoration:none;cursor:pointer}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.between{justify-content:space-between}
+
+/* lista de navegación */
+.list{display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.list a{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;padding:14px 16px;text-decoration:none;border-top:1px solid var(--line);min-height:64px}
+.list a:first-child{border-top:0}
+.list .ix{font-family:var(--serif);font-size:22px;color:var(--acc);width:28px}
+.list .tt{font-family:var(--serif);font-size:18px;line-height:1.2}
+.list .sub{display:block;font-family:var(--sans);font-size:13px;color:var(--muted);margin-top:2px}
+.chev{color:var(--muted);font-size:20px}
+.thumb{width:52px;height:52px;border-radius:10px;background:var(--sunk) center/cover}
+
+/* check */
+.ck{display:flex;align-items:center;gap:12px;min-height:46px;border-bottom:1px solid var(--line)}
+.ck input[type=checkbox]{appearance:none;width:24px;height:24px;border:2px solid var(--acc);border-radius:7px;flex:none;display:grid;place-content:center;margin:0;cursor:pointer;background:transparent}
+.ck input[type=checkbox]:checked{background:var(--acc)}
+.ck input[type=checkbox]:checked::after{content:"";width:6px;height:11px;border:solid #fff;border-width:0 2.5px 2.5px 0;transform:rotate(45deg) translate(-1px,-1px)}
+.ck .field{border-bottom:0}
+.ck.done .field{text-decoration:line-through;color:var(--muted)}
+.ck .del{appearance:none;border:0;background:none;color:var(--muted);font-size:20px;width:36px;height:36px;cursor:pointer}
+
+/* calendario */
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.cal .dh{text-align:center;font-size:11.5px;font-weight:600;letter-spacing:.06em;color:var(--muted);padding:6px 0}
+.cal .dh.we{color:var(--acc)}
+.cal a,.cal span.out{aspect-ratio:1/1.08;border-radius:10px;display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;padding:6px 7px;text-decoration:none;background:var(--card);border:1px solid var(--line);font-family:var(--serif);font-size:19px;line-height:1;min-width:0}
+.cal a.we{background:var(--acc-pale);color:var(--acc);border-color:transparent}
+.cal span.out{background:transparent;border-color:transparent}
+.cal a.today{outline:2px solid var(--ink);outline-offset:-2px}
+.cal a i{width:7px;height:7px;border-radius:50%;background:var(--acc);align-self:flex-end;opacity:0}
+.cal a.has i{opacity:1}
+.year{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.ym{text-decoration:none;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.ym b{font-family:var(--serif);font-weight:400;font-size:17px;color:var(--c)}
+.ym .mini{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;font-size:8.5px;text-align:center;color:var(--muted);font-variant-numeric:tabular-nums}
+.ym .mini .we{color:var(--c);font-weight:700}
+.ym .bar{height:4px;border-radius:2px;background:var(--line);overflow:hidden}
+.ym .bar span{display:block;height:100%;background:var(--c)}
+.weeks{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+.weeks::-webkit-scrollbar{display:none}
+.weeks a{flex:none}
+
+/* día */
+.daybar{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.daynum{font-family:var(--serif);font-size:64px;line-height:.9;color:var(--acc);letter-spacing:-.03em}
+.wday{display:grid;grid-template-columns:52px 1fr auto;gap:12px;align-items:center;padding:12px 14px;border-top:1px solid var(--line);text-decoration:none;min-height:64px}
+.wday:first-child{border-top:0}
+.wday .n{font-family:var(--serif);font-size:26px;line-height:1;color:var(--ink)}
+.wday.we .n{color:var(--acc)}
+.wday .d{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.wday .p{font-size:14px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.wday .p b{color:var(--ink);font-weight:500}
+
+/* tracker */
+.grid-wrap{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:14px}
+table.tk{border-collapse:collapse;width:100%;font-size:13px;font-variant-numeric:tabular-nums}
+table.tk th{position:sticky;top:0;background:var(--card);font-weight:600;font-size:11px;letter-spacing:.04em;padding:8px 4px;border-bottom:2px solid var(--acc);color:var(--muted);max-width:64px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+table.tk td{border-bottom:1px solid var(--line);text-align:center;padding:4px 2px;height:40px}
+table.tk td:first-child{font-family:var(--serif);font-size:15px;width:44px;color:var(--ink)}
+table.tk tr.we td:first-child{color:var(--acc)}
+table.tk input[type=checkbox]{appearance:none;width:26px;height:26px;border:2px solid var(--rule);border-radius:50%;margin:0;cursor:pointer;background:transparent}
+table.tk input[type=checkbox]:checked{background:var(--acc);border-color:var(--acc)}
+.chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.chips::-webkit-scrollbar{display:none}
+.chips button{flex:none}
+.pill.on{background:var(--acc);border-color:var(--acc);color:#F8F2E6}
+
+/* rueda */
+.slider{display:grid;grid-template-columns:1fr auto;gap:2px 12px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+.slider label{font-family:var(--serif);font-size:16px}
+.slider output{font-variant-numeric:tabular-nums;font-weight:600;color:var(--acc);min-width:2ch;text-align:right}
+.slider input{grid-column:1/-1;width:100%;accent-color:var(--acc);height:28px}
+.wheel svg{width:100%;height:auto;display:block}
+.legend{display:flex;gap:16px;font-size:13px;color:var(--muted)}
+.legend i{display:inline-block;width:14px;height:4px;border-radius:2px;vertical-align:middle;margin-right:6px}
+
+/* metas */
+details.goal{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+details.goal summary{list-style:none;cursor:pointer;padding:16px;display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;min-height:64px}
+details.goal summary::-webkit-details-marker{display:none}
+details.goal .gi{font-family:var(--serif);font-size:24px;color:var(--acc)}
+details.goal .gt{font-family:var(--serif);font-size:18px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+details.goal .gs{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+details.goal .gs.ok{color:var(--oliva)}
+details.goal .gb{padding:0 16px 16px;display:flex;flex-direction:column;gap:12px}
+.quarters{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+/* barra inferior */
+nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--ink);padding-bottom:env(safe-area-inset-bottom,0px);padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
+nav.tabs .in{max-width:560px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr);height:var(--nav)}
+nav.tabs a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:#CFC6B6;text-decoration:none;font-size:11.5px;font-weight:600;letter-spacing:.02em}
+nav.tabs a svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.7}
+nav.tabs a.on{color:#F8F2E6}
+nav.tabs a.on svg{stroke:#F8F2E6}
+nav.tabs a.on::after{content:"";width:18px;height:3px;border-radius:2px;background:var(--acc);margin-top:1px}
+
+.saved{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--nav) + env(safe-area-inset-bottom,0px) + 12px);background:var(--ink);color:#F8F2E6;font-size:13px;padding:8px 14px;border-radius:999px;opacity:0;transition:opacity .25s;pointer-events:none;z-index:40}
+.saved.show{opacity:1}
+.banner{border-radius:14px;padding:16px;background:var(--ink);color:#F8F2E6;display:flex;flex-direction:column;gap:8px}
+.banner .big{font-family:var(--serif);font-size:44px;line-height:1;color:#F3C9BC}
+.steps-ob a{display:grid;grid-template-columns:30px 1fr auto;gap:12px;align-items:center;padding:12px 0;border-top:1px solid var(--line);text-decoration:none}
+.steps-ob a:first-child{border-top:0}
+.steps-ob .dot{width:26px;height:26px;border-radius:50%;border:2px solid var(--acc);display:grid;place-content:center;font-size:13px;font-weight:700;color:var(--acc)}
+.steps-ob .dot.ok{background:var(--acc);color:#fff}
+.scale{display:flex;gap:8px}
+.scale label{flex:1}
+.scale input{position:absolute;opacity:0;pointer-events:none}
+.scale span{display:grid;place-content:center;height:44px;border:1.5px solid var(--rule);border-radius:12px;font-weight:600;cursor:pointer}
+.scale input:checked+span{background:var(--acc);border-color:var(--acc);color:#fff}
+.scale input:focus-visible+span{outline:2px solid var(--acc);outline-offset:2px}
+.affirm{font-family:var(--serif);font-size:22px;line-height:1.3;text-align:center;padding:26px 18px;background:var(--acc-pale);border-radius:14px;color:var(--acc)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+
+</head><body><div class="app" id="app"><main id="view" tabindex="-1"></main></div>
+<div class="saved" id="saved" role="status" aria-live="polite">Guardado</div>
+<nav class="tabs" aria-label="Secciones"><div class="in" id="tabs"></div></nav>
+
+<script>
+const D={"meses": ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"], "mesCorto": ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"], "dias": ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"], "frases": ["Todavía hay tiempo. Organízalo.", "Primero lo anotas. Después lo haces.", "La edad no es una fecha límite.", "Tu lista de «algún día» ahora tiene fecha.", "No llegaste tarde. Llegaste con experiencia.", "Mitad de año, mitad de camino. Sigue.", "Ajustar el plan también es avanzar.", "¿Quién dijo que ya no?", "Lo que empiezas hoy, mañana ya lleva tiempo hecho.", "Tu tiempo también es tuyo.", "Mira todo lo que sí hiciste.", "El próximo año también es todavía."], "mesAcc": ["#D63A22", "#163F7A", "#163F7A", "#D63A22", "#163F7A", "#A8391C", "#D63A22", "#163F7A", "#9A6A12", "#5E5B26", "#A8391C", "#163F7A"], "mesPale": ["#F6DCD2", "#DDE3EC", "#DDE3EC", "#F6DCD2", "#DDE3EC", "#F0D8CB", "#F6DCD2", "#DDE3EC", "#F3E3C2", "#E4E1C8", "#F0D8CB", "#DDE3EC"], "mesImg": ["12", "10", "16", "13", "11", "05", "15", "09", "01", "03", "02", "17"], "bienvenida": ["Durante años te dijeron que había una edad para todo: para estudiar, para cambiar de trabajo, para empezar algo propio, para ponerte en primer lugar. Y en algún momento te lo creíste.", "Quizás pasaste los últimos años organizando la vida de todos los demás: reuniones, horarios, cumpleaños, médicos, cuentas. Tu agenda estaba llena, pero casi nada era tuyo. Y lo que sí era tuyo quedó en una lista invisible que se llama «algún día».", "Este ebook existe para decirte otra cosa: todavía. Todavía puedes aprender, cambiar de rumbo, emprender, viajar, cuidarte, empezar. No necesitas más motivación. Necesitas un plan y un lugar donde anotarlo.", "En estas páginas vas a hacer tres cosas. Primero, revisar la historia del «ya es tarde» y decidir si sigues creyéndola. Después, sacar a la luz todo lo que postergaste. Por último, llevarlo a tu calendario, semana a semana, con la agenda que encontrarás al final.", "No tienes que completarlo todo en un día. Avanza a tu ritmo. Lo importante es empezar."], "caps": [{"n": 1, "img": "02", "blocks": [{"t": "pull", "x": "Si hoy tienes 40 años y empiezas algo que lleva cinco años, a los 45 vas a tener 45 años de todas formas. La única diferencia es si los cumples con eso hecho o todavía esperando."}, {"t": "ex", "k": "1.1", "title": "Mis «ya no»", "desc": "Escribe las frases que te dices cuando piensas en algo nuevo. Por ejemplo: «ya no tengo edad para estudiar», «ya es tarde para cambiar de trabajo».", "field": "text"}, {"t": "ex", "k": "1.2", "title": "¿De quién es esa voz?", "desc": "Al lado de cada frase, anota de dónde viene: tu familia, tu entorno, una experiencia, tu propio miedo. Muchas veces descubres que ni siquiera es tuya.", "field": "text"}, {"t": "ex", "k": "1.3", "title": "Reescribe la frase", "desc": "Transforma cada «ya no» en un «todavía».", "field": "pairs", "n": 5, "ex": [["Ya no tengo edad para estudiar", "Todavía puedo aprender lo que me interesa"], ["Ya es tarde para emprender", "Todavía puedo empezar en pequeño"]]}, {"t": "ex", "k": "1.4", "title": "Lo que ya demostraste", "desc": "Anota cinco cosas difíciles que lograste en tu vida. Esa experiencia no es un obstáculo: es tu ventaja.", "field": "list", "n": 5}], "title": "La historia del «ya es tarde»", "intro": "«Ya es tarde» no es un dato: es una historia que alguien te contó y que repetiste tantas veces que parece verdad. Este capítulo te ayuda a revisarla."}, {"n": 2, "img": "04", "blocks": [{"t": "ex", "k": "2.1", "title": "Vacía la lista", "desc": "Escribe sin filtro todo lo que alguna vez quisiste hacer y fuiste postergando: un curso, un viaje, un negocio, ordenar tus finanzas, volver a moverte, aprender un idioma, cambiar de trabajo. Intenta llegar a 20.", "field": "list", "n": 20}, {"t": "ex", "k": "2.2", "title": "Ordena por áreas", "desc": "Ubica cada pendiente en un área de tu vida.", "field": "labeled", "labels": ["Salud y cuerpo", "Trabajo y profesión", "Dinero", "Aprendizaje", "Vínculos", "Proyectos propios", "Disfrute y descanso", "Hogar y orden"]}, {"t": "ex", "k": "2.3", "title": "El filtro de las tres preguntas", "desc": "Para cada pendiente, responde con honestidad.", "field": "text", "qs": ["¿Todavía lo quiero, o lo quería otra versión de mí?", "¿Qué cambiaría en mi vida si lo hiciera este año?", "¿Cuánto me pesa seguir postergándolo?"]}, {"t": "ex", "k": "2.4", "title": "Mis elegidos 2027", "desc": "De toda la lista, elige entre tres y cinco pendientes para este año. El resto no se borra: queda guardado para el próximo.", "field": "list", "n": 5, "link": ["Llevar a mis fichas de meta", "metas"]}], "title": "Tu lista de «algún día»", "intro": "Todas tenemos una lista de cosas que vamos a hacer «algún día». El problema es que «algún día» no está en ningún calendario. Este capítulo saca esa lista de tu cabeza y la pone en papel."}, {"n": 3, "img": "06", "blocks": [{"t": "steps", "items": [["Anótalo con claridad", "Cambia «quiero estar mejor de salud» por «quiero caminar 30 minutos, cuatro veces por semana»."], ["Ponle fecha", "Elige un mes de inicio y una fecha de cierre. Lo que tiene fecha existe."], ["Divídelo en etapas", "Reparte la meta en los cuatro trimestres del año, para que nunca sea una montaña."], ["Elige el primer paso", "La acción más pequeña que puedes hacer esta semana: inscribirte, llamar, buscar, comprar el cuaderno."]]}, {"t": "pull", "x": "Tus fichas de meta están en el bono «Metas y sueños 2027». Completa una por cada pendiente elegido y vuelve a ellas cada domingo."}, {"t": "link", "x": "Abrir mis fichas de meta", "to": "metas"}], "title": "De «algún día» a una fecha", "intro": "Un pendiente se convierte en meta cuando tiene fecha y un primer paso. Para eso usamos el método Todavía, en cuatro pasos."}, {"n": 4, "img": "07", "blocks": [{"t": "ex", "k": "4.1", "title": "Mi semana tal como es", "desc": "Durante una semana, anota cuántas horas se van en cada bloque. No juzgues, solo observa.", "field": "labeled", "labels": ["Trabajo", "Traslados", "Cuidados", "Hogar", "Pantallas", "Descanso", "Para mí"], "short": true}, {"t": "ex", "k": "4.2", "title": "Mis tres listas", "desc": "Clasifica tus tareas habituales y decide qué hacer con cada grupo.", "field": "labeled", "labels": ["Solo yo · Lo agendo primero.", "Puedo compartir · Lo pido o lo delego.", "Puedo soltar · Lo dejo de hacer."]}, {"t": "ex", "k": "4.3", "title": "Mis bloques sagrados", "desc": "Elige dos o tres momentos fijos por semana para tus metas, aunque sean de 30 minutos. Anótalos como una cita médica: no se cancelan.", "field": "text"}, {"t": "ex", "k": "4.4", "title": "Mis frases para decir que no", "desc": "Ten a mano tres formas amables de decir que no.", "field": "text", "qs": ["«Esta semana no puedo, pero el jueves sí.»", "«Ese horario lo tengo ocupado.»", "«Prefiero no comprometerme si no voy a poder cumplir.»"]}], "title": "Organizar tu tiempo real", "intro": "No te falta tiempo: te falta tiempo reservado para ti. Entre el trabajo, la casa, los hijos o los padres, tu semana se llena sola si no la defiendes."}, {"n": 5, "img": "08", "blocks": [{"t": "keys", "items": [["Empieza pequeño", "Diez minutos de estudio, una caminata corta, una página escrita."], ["Únelo a algo que ya haces", "«Después del café de la mañana, reviso mis prioridades.»"], ["Hazlo visible", "Márcalo en tu registro de hábitos. Ver los días cumplidos motiva."], ["Regla de los dos días", "Fallar un día es normal. Lo importante es no fallar dos seguidos."]]}, {"t": "pull", "x": "Sin culpa. Va a haber semanas complicadas: alguien se enferma, el trabajo explota, el cuerpo pide pausa. No es un fracaso. Ajusta el plan y sigue. La agenda es una herramienta, no un examen."}, {"t": "ideas", "items": [["Salud", "Caminar 20 minutos, tomar agua al despertar, dormir a la misma hora"], ["Bienestar", "Tres agradecimientos, cinco minutos de respiración, una hora sin pantallas"], ["Trabajo y proyectos", "Planificar el día la noche anterior, un bloque de 60 minutos para tu proyecto"], ["Dinero", "Registrar gastos cada día, revisar el presupuesto una vez por semana"], ["Aprendizaje", "Leer 10 páginas, una clase o tutorial por semana"]]}, {"t": "ex", "k": "5.1", "title": "Mis hábitos 2027", "desc": "Elige hasta cinco hábitos conectados con tus metas.", "field": "none", "link": ["Elegir mis hábitos en el tracker", "tracker"]}, {"t": "ex", "k": "5.2", "title": "Mis recompensas", "desc": "Decide de antemano cómo vas a celebrar cada avance. Celebrar también es parte del plan.", "field": "labeled", "labels": ["Al cumplir 7 días", "Al cumplir un mes", "Al cerrar un trimestre", "Al cumplir la meta"]}], "title": "Constancia sin culpa", "intro": "Las metas se cumplen con hábitos pequeños, no con grandes arranques. Y la constancia no significa no fallar nunca: significa volver rápido cuando fallas."}, {"n": 6, "img": "03", "blocks": [{"t": "rituals", "items": [["Mensual", "20 minutos, el último fin de semana del mes", ["Revisa el mes que termina: qué avanzó y qué ajustarías.", "Elige el foco del mes y tus tres prioridades.", "Anota fechas importantes, pagos y compromisos.", "Agrega una «primera vez» para el mes que empieza.", "Prepara tu registro de hábitos."]], ["Semanal", "15 minutos, el domingo o el lunes temprano", ["Mira tus fichas de meta y elige el paso de esta semana.", "Reserva tus bloques sagrados antes que cualquier otra cosa.", "Reparte el resto de las tareas sin sobrecargarte."]], ["Diario", "5 minutos", ["Por la mañana, escribe tus tres prioridades del día.", "Por la noche, marca lo hecho y pasa lo pendiente al día siguiente."]]]}, {"t": "pull", "x": "La primera semana, haz solo el ritual diario. La segunda, suma el semanal. A fin de mes, el mensual. Así la agenda se vuelve un hábito y no una tarea más."}], "title": "Cómo usar tu agenda", "intro": "Tu agenda funciona con tres rituales: uno mensual, uno semanal y uno diario. En total te llevan menos de una hora por semana."}], "revision": ["¿Qué avanzó este mes?", "¿Qué me costó y por qué?", "¿Cómo me fue con mi primera vez?", "¿Qué quiero ajustar el mes que viene?", "Algo de lo que me siento orgullosa"], "cierre": ["Las metas que cumplí", "Las primeras veces que viví", "Lo que aprendí de mí", "Lo que agradezco de este año", "Lo que dejo atrás"], "atiempo": [["A esta altura de tu vida", ["Hay una frase que se repite mucho después de los 35: «a esta altura de mi vida…». Casi siempre termina en algo que ya no vamos a hacer.", "La historia de esta marca empieza ahí. Una mujer de 60 años, con los hijos ya grandes, la decía todo el tiempo. Hasta que su hija le contestó: «¡A esta altura de tu vida estás viva! ¡Vive!»."]], ["La edad no es una fecha límite", ["Ningún calendario trae marcado el día en que se vence tu derecho a empezar. Lo que sí trae son semanas: 52 este año. Cada una es una oportunidad concreta.", "Empezar a los 40, a los 50 o a los 60 no es empezar tarde. Es empezar con experiencia, con criterio y sabiendo qué es lo que de verdad te importa."]], ["Lo que ya tienes a favor", ["Sabes organizar: llevas años coordinando casas, trabajos, familias. Sabes sostener cosas difíciles. Sabes pedir ayuda y también cuándo no la necesitas.", "Esa experiencia es exactamente lo que hace falta para cumplir una meta. Esta agenda solo te da el lugar donde ponerla."]], ["Tres pasos para hoy", ["Uno: escribe una cosa que dejaste para «algún día». Dos: ponle un mes. Tres: anota la acción más pequeña que podrías hacer esta semana.", "Eso es todo. No hace falta un gran plan para empezar. Hace falta una fecha."]]], "afirm": ["Todavía puedo aprender lo que me interesa.", "Mi experiencia es mi ventaja.", "Este año me pongo en mi propio calendario.", "Empezar en pequeño también es empezar.", "No llegué tarde. Llegué a tiempo para mí."], "ficha": ["Mi meta", "Por qué todavía la quiero", "Cómo sabré que la cumplí", "Fecha de inicio · fecha de cierre", "Mi primer paso esta semana", "Qué me puede frenar y qué haré entonces", "Quién me puede ayudar", "Cómo voy a celebrarlo"], "areas": ["Salud y cuerpo", "Trabajo y profesión", "Dinero", "Aprendizaje", "Vínculos", "Proyectos propios", "Disfrute y descanso", "Hogar y orden"], "final": "Llegaste hasta aquí, y eso ya dice mucho. Vuelve a estas páginas cada vez que aparezca el «ya es tarde»: tu lista, tus fechas y tus primeros pasos van a estar esperándote."};
+(function(){
+"use strict";
+const KEY="todavia2027.v1";
+let S={};
+try{S=JSON.parse(localStorage.getItem(KEY)||"{}")||{}}catch(e){S={}}
+const def={name:"",days:{},months:{},weeks:{},habits:["","","","",""],guide:{},goals:[{},{},{},{},{}],dreams:[],wheel:{},wheelGoal:{},pv:[],cierre:{},ob:{},atiempo:{}};
+for(const k in def){if(S[k]===undefined)S[k]=JSON.parse(JSON.stringify(def[k]))}
+let saveT;
+function save(){clearTimeout(saveT);saveT=setTimeout(()=>{try{localStorage.setItem(KEY,JSON.stringify(S));flash()}catch(e){flash("No se pudo guardar en este navegador")}},350)}
+let flashT;function flash(t){const el=document.getElementById("saved");el.textContent=t||"Guardado";el.classList.add("show");clearTimeout(flashT);flashT=setTimeout(()=>el.classList.remove("show"),1100)}
+function getP(path){return path.split(".").reduce((o,k)=>o==null?undefined:o[k],S)}
+function setP(path,v){const ks=path.split(".");let o=S;for(let i=0;i<ks.length-1;i++){const k=ks[i];if(o[k]==null||typeof o[k]!=="object")o[k]=/^\d+$/.test(ks[i+1])?[]:{};o=o[k]}o[ks[ks.length-1]]=v;save()}
+
+const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const YEAR=2027;
+const pad=n=>String(n).padStart(2,"0");
+const iso=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const parse=s=>{const[a,b,c]=s.split("-").map(Number);return new Date(a,b-1,c)};
+const W0=new Date(2026,11,28);
+const weekNo=d=>Math.floor((d-W0)/864e5/7)+1;
+const weekStart=n=>{const d=new Date(W0);d.setDate(d.getDate()+(n-1)*7);return d};
+const NWEEKS=weekNo(new Date(2027,11,31));
+const dow=d=>(d.getDay()+6)%7;
+const img=n=>`img/${n}.jpg`;
+function setAcc(m){const r=document.documentElement.style;r.setProperty("--acc",D.mesAcc[m]);r.setProperty("--acc-pale",D.mesPale[m])}
+function realToday(){return new Date()}
+function inYear(d){return d.getFullYear()===YEAR}
+function focusDate(){const t=realToday();return inYear(t)?t:new Date(YEAR,0,1)}
+function dayHas(k){const d=S.days[k];if(!d)return false;return !!((d.p||[]).some(Boolean)||(d.t||[]).some(x=>x&&x.x)||d.n||d.g)}
+
+/* ---- campos ---- */
+function inp(path,ph,o={}){const v=getP(path)||"";const id="f-"+path.replace(/\W/g,"-");
+  return o.area?`<textarea class="field" id="${id}" data-k="${path}" rows="${o.rows||2}" placeholder="${esc(ph||"")}" aria-label="${esc(o.label||ph||"")}">${esc(v)}</textarea>`
+  :`<input class="field" id="${id}" data-k="${path}" value="${esc(v)}" placeholder="${esc(ph||"")}" aria-label="${esc(o.label||ph||"")}" ${o.type?`type="${o.type}"`:""}>`}
+function labeled(lbl,path,ph,o={}){return `<div><label class="label" for="f-${path.replace(/\W/g,"-")}">${esc(lbl)}</label>${inp(path,ph,{...o,label:lbl})}</div>`}
+function numList(base,n,ph){let h="";for(let i=0;i<n;i++)h+=`<div class="num"><span>${i+1}</span>${inp(base+"."+i,ph||"",{label:`${ph||"Línea"} ${i+1}`})}</div>`;return h}
+function ck(path,checked,label){return `<input type="checkbox" data-k="${path}" ${checked?"checked":""} aria-label="${esc(label)}">`}
+function grow(t){t.style.height="auto";t.style.height=(t.scrollHeight+2)+"px"}
+
+document.addEventListener("input",e=>{const t=e.target;if(!t.dataset||!t.dataset.k)return;
+  if(t.type==="checkbox")return;
+  if(t.type==="range"){setP(t.dataset.k,Number(t.value));const o=document.getElementById("o-"+t.id);if(o)o.textContent=t.value;drawWheel();return}
+  if(t.type==="radio"){setP(t.dataset.k,Number(t.value));return}
+  setP(t.dataset.k,t.value);if(t.tagName==="TEXTAREA")grow(t)});
+document.addEventListener("change",e=>{const t=e.target;if(t.type==="checkbox"&&t.dataset.k){setP(t.dataset.k,t.checked);const r=t.closest(".ck");if(r)r.classList.toggle("done",t.checked)}
+  if(t.type==="radio"&&t.dataset.k)setP(t.dataset.k,Number(t.value))});
+
+/* ---- iconos barra ---- */
+const IC={
+ hoy:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.8v2.4M12 18.8v2.4M2.8 12h2.4M18.8 12h2.4M5.5 5.5l1.7 1.7M16.8 16.8l1.7 1.7M5.5 18.5l1.7-1.7M16.8 7.2l1.7-1.7"/></svg>',
+ calendario:'<svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 9.5h17M8 3v4M16 3v4"/></svg>',
+ guia:'<svg viewBox="0 0 24 24"><path d="M12 6.5c-2-1.6-4.8-2-8-1.5v13.5c3.2-.5 6 0 8 1.5 2-1.5 4.8-2 8-1.5V5c-3.2-.5-6-.1-8 1.5zM12 6.5v13.5"/></svg>',
+ bonos:'<svg viewBox="0 0 24 24"><rect x="3.5" y="9" width="17" height="11.5" rx="2"/><path d="M3.5 13h17M12 9v11.5M12 9c-1.5-3.6-6-4-6-1.2C6 9 9 9 12 9zm0 0c1.5-3.6 6-4 6-1.2C18 9 15 9 12 9z"/></svg>',
+ mas:'<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.8-3.6 3.6-5.5 7-5.5s6.2 1.9 7 5.5"/></svg>'};
+const TABS=[["hoy","Hoy"],["calendario","Agenda"],["guia","Guía"],["bonos","Bonos"],["mas","Mi espacio"]];
+function tabFor(r){if(/^(calendario|mes|dia|semana)/.test(r))return"calendario";if(/^(guia|cap|bienvenida)/.test(r))return"guia";if(/^(bonos|atiempo|metas|tracker|rueda)/.test(r))return"bonos";if(/^(mas|primeras|cierre|respaldo|instalar)/.test(r))return"mas";return"hoy"}
+function drawTabs(r){const on=tabFor(r);document.getElementById("tabs").innerHTML=TABS.map(([k,l])=>`<a href="#${k}" class="${k===on?"on":""}" ${k===on?'aria-current="page"':""}>${IC[k]}<span>${l}</span></a>`).join("")}
+
+/* ---- vistas ---- */
+const V={};
+function miniMonth(m){const first=new Date(YEAR,m,1),n=new Date(YEAR,m+1,0).getDate();let h=D.dias.map((d,i)=>`<span class="${i>4?"we":""}">${d[0]}</span>`).join("");for(let i=0;i<dow(first);i++)h+="<span></span>";for(let d=1;d<=n;d++){const w=dow(new Date(YEAR,m,d));h+=`<span class="${w>4?"we":""}">${d}</span>`}return h}
+function monthFill(m){const n=new Date(YEAR,m+1,0).getDate();let c=0;for(let d=1;d<=n;d++)if(dayHas(`${YEAR}-${pad(m+1)}-${pad(d)}`))c++;return Math.round(c/n*100)}
+
+V.hoy=()=>{const t=realToday(),f=focusDate(),m=f.getMonth();setAcc(m);
+  const k=iso(f),name=S.name?`, ${esc(S.name)}`:"";
+  const days=Math.ceil((new Date(YEAR,0,1)-t)/864e5);
+  const ob=[["Lee la bienvenida","bienvenida","guía · 3 min"],["Completa tu rueda de la vida","rueda","bono · 5 min"],["Escribe tu lista de «algún día»","cap-2","capítulo 2"],["Crea tu primera ficha de meta","metas","bono"],["Elige tus hábitos","tracker","bono"]];
+  const obDone=[!!S.ob.bienvenida,Object.keys(S.wheel).length>0,((S.guide["2.1"]||[]).filter(Boolean).length>0),!!(S.goals[0]&&S.goals[0].meta),S.habits.some(Boolean)];
+  const left=obDone.filter(x=>!x).length;
+  return `<div class="hero" style="background-image:url(${img(D.mesImg[m])})"></div>
+  <div class="wrap"><div class="head"><span class="eyebrow">${D.meses[m]} ${YEAR}</span><h1>Hola${name}.</h1><p class="lead muted">${D.frases[m]}</p></div>
+  ${!inYear(t)&&days>0?`<div class="section"><div class="banner"><span class="eyebrow" style="color:#F3C9BC">Tu año empieza el 1 de enero</span><span class="big">Faltan ${days} días</span><p style="margin:0">Mientras tanto, prepara tu 2027 con la guía y los bonos. Tu agenda ya está lista para anotar.</p></div></div>`:""}
+  ${left?`<div class="section"><h2>Para empezar</h2><div class="card steps-ob">${ob.map((o,i)=>`<a href="#${o[1]}"><span class="dot ${obDone[i]?"ok":""}">${obDone[i]?"✓":i+1}</span><span><b style="font-weight:500">${o[0]}</b><span class="small muted" style="display:block">${o[2]}</span></span><span class="chev">›</span></a>`).join("")}</div></div>`:""}
+  <div class="section"><div class="head-row"><h2>${inYear(t)?"Hoy":"Tu primer día"}</h2><a class="pill" href="#dia-${k}">Abrir día ›</a></div>
+  <p class="muted" style="margin:0">${D.dias[dow(f)]} ${f.getDate()} de ${D.meses[m].toLowerCase()}</p>
+  <div class="card stack"><span class="label">Tres prioridades</span>${numList(`days.${k}.p`,3,"Prioridad")}</div>
+  <div class="card"><label class="label" for="f-days-${k.replace(/\W/g,"-")}-g">Hoy agradezco</label>${inp(`days.${k}.g`,"Una cosa buena de hoy")}</div>
+  ${habitsToday(k)}</div>
+  <div class="section"><a class="btn acc" href="#semana-${weekNo(f)}">Ver mi semana</a><a class="btn ghost" href="#mes-${m+1}">Ver ${D.meses[m].toLowerCase()}</a></div></div>`};
+
+function habitsToday(k){const hs=S.habits.map((h,i)=>[h,i]).filter(x=>x[0]);
+  if(!hs.length)return `<div class="card"><span class="label">Mis hábitos</span><p class="muted small" style="margin:0 0 10px">Todavía no elegiste tus hábitos.</p><a class="pill" href="#tracker">Elegir hábitos ›</a></div>`;
+  return `<div class="card"><span class="label">Mis hábitos de hoy</span>${hs.map(([h,i])=>{const p=`days.${k}.h.${i}`;const v=!!getP(p);return `<label class="ck ${v?"done":""}">${ck(p,v,h)}<span>${esc(h)}</span></label>`}).join("")}</div>`}
+
+V.calendario=()=>{const f=focusDate();setAcc(f.getMonth());
+  return `<div class="wrap"><div class="head" style="padding-top:26px"><span class="eyebrow" style="color:var(--muted)">Tu agenda</span><h1>2027</h1><p class="muted" style="margin:0">Toca un mes para abrir su calendario.</p></div>
+  <div class="section"><div class="year">${D.meses.map((n,m)=>`<a class="ym" href="#mes-${m+1}" style="--c:${D.mesAcc[m]}"><b>${n}</b><div class="mini">${miniMonth(m)}</div><div class="bar" title="Días con notas"><span style="width:${monthFill(m)}%"></span></div></a>`).join("")}</div>
+  <p class="small muted">La barrita debajo de cada mes muestra cuántos días ya tienen algo anotado.</p></div>
+  <div class="section"><a class="btn ghost" href="#primeras">Mis primeras veces 2027</a><a class="btn ghost" href="#cierre">Cierre del año</a></div></div>`};
+
+V.mes=(n)=>{const m=Math.min(12,Math.max(1,Number(n)||1))-1;setAcc(m);
+  const first=new Date(YEAR,m,1),nd=new Date(YEAR,m+1,0).getDate(),tk=iso(realToday());let cells=D.dias.map((d,i)=>`<span class="dh ${i>4?"we":""}">${d.slice(0,3)}</span>`).join("");
+  for(let i=0;i<dow(first);i++)cells+=`<span class="out"></span>`;
+  for(let d=1;d<=nd;d++){const dt=new Date(YEAR,m,d),k=iso(dt);cells+=`<a href="#dia-${k}" class="${dow(dt)>4?"we":""} ${dayHas(k)?"has":""} ${k===tk?"today":""}" aria-label="${D.dias[dow(dt)]} ${d}">${d}<i></i></a>`}
+  const mk=`months.${m+1}`;const ws=[];for(let w=1;w<=NWEEKS;w++){const s=weekStart(w);const own=s.getFullYear()<YEAR?0:s.getMonth();if(own===m)ws.push(w)}
+  const prev=m>0?`<a class="iconbtn" href="#mes-${m}" aria-label="${D.meses[m-1]}">‹</a>`:`<span></span>`,next=m<11?`<a class="iconbtn" href="#mes-${m+2}" aria-label="${D.meses[m+1]}">›</a>`:`<span></span>`;
+  return `<div class="hero short" style="background-image:url(${img(D.mesImg[m])})"><a class="iconbtn back" href="#calendario" aria-label="Volver al año">‹</a></div>
+  <div class="wrap"><div class="head"><div class="head-row"><div><span class="eyebrow">${pad(m+1)} · 2027</span><h1>${D.meses[m]}</h1></div><div class="row">${prev}${next}</div></div><p class="muted" style="font-family:var(--serif);font-style:italic;font-size:17px;margin:0">${D.frases[m]}</p></div>
+  <div class="section"><div class="cal">${cells}</div><p class="small muted" style="margin:0">Toca un día para escribir. El punto indica que ya tiene notas.</p></div>
+  <div class="section"><span class="label">Semanas</span><div class="weeks">${ws.map(w=>{const s=weekStart(w),e=new Date(s);e.setDate(e.getDate()+6);return `<a class="pill" href="#semana-${w}">S${w} · ${s.getDate()} ${D.mesCorto[s.getMonth()]}–${e.getDate()} ${D.mesCorto[e.getMonth()]}</a>`}).join("")}</div></div>
+  <div class="section"><h2>Plan del mes</h2>
+   <div class="card stack">${labeled("Mi foco del mes",mk+".foco","¿Qué es lo más importante este mes?",{area:true})}
+   <div><span class="label">Tres prioridades</span>${numList(mk+".pri",3,"Prioridad")}</div>
+   ${labeled("Mi primera vez de este mes",mk+".pv","Algo que harás por primera vez")}
+   ${labeled("Fechas, pagos y compromisos",mk+".fechas","Ej.: 10 · pago de tarjeta",{area:true,rows:3})}
+   ${labeled("Paso del mes hacia mis metas",mk+".paso","",{area:true})}</div></div>
+  <div class="section"><details class="goal"><summary><span class="gi">✦</span><span class="gt">Revisión del mes</span><span class="chev">›</span></summary><div class="gb">
+   ${D.revision.map((q,i)=>labeled(q,`${mk}.rev.${i}`,"",{area:true})).join("")}
+   <div><span class="label">Cómo me sentí este mes</span><div class="scale" role="radiogroup" aria-label="Cómo me sentí">${[1,2,3,4,5].map(v=>`<label><input type="radio" name="sc${m}" value="${v}" data-k="${mk}.animo" ${getP(mk+".animo")===v?"checked":""}><span>${v}</span></label>`).join("")}</div></div>
+  </div></details></div></div>`};
+
+V.dia=(k)=>{let d=parse(k);if(isNaN(d)||!inYear(d))d=focusDate();k=iso(d);const m=d.getMonth();setAcc(m);
+  const p=new Date(d);p.setDate(p.getDate()-1);const nx=new Date(d);nx.setDate(nx.getDate()+1);
+  const tasks=getP(`days.${k}.t`)||[];
+  return `<div class="wrap"><div class="head" style="padding-top:18px"><div class="daybar"><a class="iconbtn" href="#mes-${m+1}" aria-label="Volver al mes">‹</a><div class="row">${inYear(p)?`<a class="pill" href="#dia-${iso(p)}">‹ ${p.getDate()}</a>`:""}${inYear(nx)?`<a class="pill" href="#dia-${iso(nx)}">${nx.getDate()} ›</a>`:""}</div></div>
+   <div class="head-row" style="margin-top:8px"><div><span class="eyebrow">${D.dias[dow(d)]}</span><h2>${D.meses[m]} · semana ${weekNo(d)}</h2></div><span class="daynum">${d.getDate()}</span></div></div>
+  <div class="section"><div class="card stack"><span class="label">Tres prioridades</span>${numList(`days.${k}.p`,3,"Prioridad")}</div>
+  <div class="card"><span class="label">Tareas</span><div id="tasks">${tasks.map((t,i)=>taskRow(k,i,t)).join("")}</div><button class="btn ghost sm" id="addTask" style="margin-top:10px">+ Agregar tarea</button></div>
+  <div class="card">${labeled("Notas",`days.${k}.n`,"Lo que no quieres olvidar",{area:true,rows:3})}</div>
+  <div class="card">${labeled("Hoy agradezco",`days.${k}.g`,"Una cosa buena de hoy")}</div>
+  ${habitsToday(k)}
+  <a class="btn acc" href="#semana-${weekNo(d)}">Ver semana ${weekNo(d)}</a></div></div>`};
+function taskRow(k,i,t){t=t||{};return `<div class="ck ${t.d?"done":""}">${ck(`days.${k}.t.${i}.d`,t.d,"Tarea hecha")}${inp(`days.${k}.t.${i}.x`,"Escribe una tarea",{label:"Tarea "+(i+1)})}<button class="del" data-del="${i}" aria-label="Borrar tarea">×</button></div>`}
+
+V.semana=(n)=>{n=Math.min(NWEEKS,Math.max(1,Number(n)||1));const s=weekStart(n),e=new Date(s);e.setDate(e.getDate()+6);const m=s.getFullYear()<YEAR?0:s.getMonth();setAcc(m);
+  const wk=`weeks.${n}`;let rows="";
+  for(let i=0;i<7;i++){const d=new Date(s);d.setDate(d.getDate()+i);const k=iso(d);const dd=S.days[k]||{};const pr=(dd.p||[]).filter(Boolean);const nt=(dd.t||[]).filter(x=>x&&x.x).length;
+    const prev=pr.length?`<b>${esc(pr[0])}</b>${pr.length>1?` · +${pr.length-1}`:""}`:(nt?`${nt} tareas`:"Sin anotar");
+    rows+=inYear(d)?`<a class="wday ${i>4?"we":""}" href="#dia-${k}"><span><span class="n">${d.getDate()}</span><br><span class="d">${D.dias[i].slice(0,3)}</span></span><span class="p">${prev}</span><span class="chev">›</span></a>`:`<div class="wday" style="opacity:.45"><span><span class="n">${d.getDate()}</span><br><span class="d">${D.dias[i].slice(0,3)}</span></span><span class="p">2026</span><span></span></div>`}
+  return `<div class="wrap"><div class="head" style="padding-top:18px"><div class="daybar"><a class="iconbtn" href="#mes-${m+1}" aria-label="Volver al mes">‹</a><div class="row">${n>1?`<a class="pill" href="#semana-${n-1}">‹ S${n-1}</a>`:""}${n<NWEEKS?`<a class="pill" href="#semana-${n+1}">S${n+1} ›</a>`:""}</div></div>
+   <span class="eyebrow" style="margin-top:8px">Semana ${n}</span><h1>${s.getDate()} ${D.mesCorto[s.getMonth()]} – ${e.getDate()} ${D.mesCorto[e.getMonth()]}</h1></div>
+  <div class="section"><div class="card tint stack">${labeled("Paso de esta semana hacia mi meta",wk+".paso","",{area:true})}${labeled("Mis bloques sagrados",wk+".bloques","Ej.: martes 7:00 · caminar",{area:true})}</div>
+  <div class="list">${rows}</div></div></div>`};
+
+/* ---- guía ---- */
+V.guia=()=>{setAcc(0);return `<div class="hero" style="background-image:url(${img("19")})"></div><div class="wrap"><div class="head"><span class="eyebrow">La guía</span><h1>De «algún día» a una fecha</h1><p class="muted" style="margin:0">Seis capítulos cortos con ejercicios para completar aquí mismo.</p></div>
+  <div class="section"><div class="list"><a href="#bienvenida"><span class="thumb" style="background-image:url(${img("19")})"></span><span class="tt">Bienvenida<span class="sub">Todavía.</span></span><span class="chev">›</span></a>
+  ${D.caps.map(c=>`<a href="#cap-${c.n}"><span class="thumb" style="background-image:url(${img(c.img)})"></span><span class="tt">${c.n} · ${esc(c.title)}<span class="sub">${capProgress(c)}</span></span><span class="chev">›</span></a>`).join("")}</div></div></div>`};
+function capProgress(c){const ks=c.blocks.filter(b=>b.t==="ex"&&b.field!=="none").map(b=>b.k);if(!ks.length)return"Lectura";const done=ks.filter(k=>{const v=S.guide[k];return v&&(typeof v==="string"?v.trim():JSON.stringify(v).replace(/[\[\]{}",:0-9]/g,"").trim())}).length;return `${done} de ${ks.length} ejercicios`}
+V.bienvenida=()=>{setAcc(0);S.ob.bienvenida=true;save();return `<div class="hero" style="background-image:url(${img("19")})"><a class="iconbtn back" href="#guia" aria-label="Volver a la guía">‹</a></div><div class="wrap"><div class="head"><span class="eyebrow">Bienvenida</span><h1>Todavía.</h1></div>
+ <div class="section"><p class="lead">${D.bienvenida[0]}</p>${D.bienvenida.slice(1).map(p=>`<p>${p}</p>`).join("")}<p class="lead">Todavía hay tiempo. <em style="color:var(--oxido)">Organízalo.</em></p>
+ <a class="btn acc" href="#cap-1">Empezar el capítulo 1</a></div></div>`};
+V.cap=(n)=>{const c=D.caps.find(x=>x.n===Number(n))||D.caps[0];setAcc([0,3,1,6,4,8][c.n-1]);
+  const body=c.blocks.map(b=>block(b)).join("");const nx=D.caps.find(x=>x.n===c.n+1);
+  return `<div class="hero" style="background-image:url(${img(c.img)})"><a class="iconbtn back" href="#guia" aria-label="Volver a la guía">‹</a></div><div class="wrap"><div class="head"><span class="eyebrow">Capítulo ${c.n}</span><h1>${esc(c.title)}</h1><p class="lead muted" style="margin-top:6px">${esc(c.intro)}</p></div>
+  <div class="section">${body}</div><div class="section">${nx?`<a class="btn acc" href="#cap-${nx.n}">Capítulo ${nx.n} · ${esc(nx.title)}</a>`:`<a class="btn acc" href="#calendario">Ir a mi agenda 2027</a>`}</div></div>`};
+function block(b){
+  if(b.t==="pull")return `<div class="pull">${esc(b.x)}</div>`;
+  if(b.t==="link")return `<a class="btn ghost" href="#${b.to}">${esc(b.x)} ›</a>`;
+  if(b.t==="steps")return `<div class="card stack">${b.items.map((s,i)=>`<div class="num" style="align-items:start"><span style="padding:0">${i+1}</span><div><h3>${esc(s[0])}</h3><p class="muted small" style="margin:0">${esc(s[1])}</p></div></div>`).join("")}</div>`;
+  if(b.t==="keys")return `<div class="card stack">${b.items.map(s=>`<div><h3>${esc(s[0])}</h3><p class="muted small" style="margin:0">${esc(s[1])}</p></div>`).join("")}</div>`;
+  if(b.t==="ideas")return `<div class="card stack"><span class="label">Ideas de hábitos por área</span>${b.items.map(s=>`<div><b style="font-weight:600">${esc(s[0])}</b><p class="muted small" style="margin:0">${esc(s[1])}</p></div>`).join("")}</div>`;
+  if(b.t==="rituals")return b.items.map(r=>`<div class="card"><span class="label">Ritual ${esc(r[0].toLowerCase())} · ${esc(r[1])}</span><ol style="margin:0;padding-left:20px;font-family:var(--serif);font-size:17px;line-height:1.5">${r[2].map(x=>`<li>${esc(x)}</li>`).join("")}</ol></div>`).join("");
+  if(b.t==="ex"){const p=`guide.${b.k}`;let f="";
+    if(b.field==="text")f=inp(p,"Escribe aquí",{area:true,rows:4,label:b.title});
+    if(b.field==="list")f=numList(p,b.n,"");
+    if(b.field==="labeled")f=b.labels.map((l,i)=>labeled(l,`${p}.${i}`,"",{area:!b.short})).join("");
+    if(b.field==="pairs"){f=`<div class="pair"><span class="label">Lo que me digo</span><span class="label">Lo que elijo decirme</span></div>`;for(let i=0;i<b.n;i++){const e=(b.ex||[])[i]||["",""];f+=`<div class="pair">${inp(`${p}.${i}.a`,e[0]||"Ya no…",{label:"Lo que me digo"})}${inp(`${p}.${i}.b`,e[1]||"Todavía…",{label:"Lo que elijo decirme"})}</div>`}}
+    const qs=b.qs?`<ol style="margin:0 0 4px;padding-left:20px;font-family:var(--serif);font-size:17px">${b.qs.map(q=>`<li>${esc(q)}</li>`).join("")}</ol>`:"";
+    const ln=b.link?`<a class="pill" href="#${b.link[1]}">${esc(b.link[0])} ›</a>`:"";
+    return `<div class="card stack"><div><span class="eyebrow">Ejercicio ${b.k.split(".")[1]}</span><h3>${esc(b.title)}</h3><p class="muted small" style="margin:4px 0 0">${esc(b.desc)}</p></div>${qs}${f}${ln}</div>`}
+  return ""}
+
+/* ---- bonos ---- */
+const BONOS=[["atiempo","Todavía estás a tiempo","Guía corta para empezar sin culpa","14","62% 30%"],["metas","Metas y sueños 2027","Tu lista de sueños y 5 fichas de meta","06","50% 40%"],["tracker","Hábitos y gratitud","Registro diario mes a mes","07","55% 45%"],["rueda","Rueda de la vida","Mira cómo estás hoy en 8 áreas","01","50% 50%"]];
+V.bonos=()=>{setAcc(4);return `<div class="wrap"><div class="head" style="padding-top:26px"><span class="eyebrow" style="color:var(--muted)">Incluidos con tu agenda</span><h1>Tus bonos</h1></div>
+ <div class="section"><div class="list">${BONOS.map((b,i)=>`<a href="#${b[0]}"><span class="thumb" style="background-image:url(${img(b[3])});background-position:${b[4]}"></span><span class="tt">${b[1]}<span class="sub">Bono ${i+1} · ${b[2]}</span></span><span class="chev">›</span></a>`).join("")}</div></div></div>`};
+function bonoHero(i,back){const b=BONOS[i];return `<div class="hero short" style="background-image:url(${img(b[3])});background-position:${b[4]};background-size:180%"><a class="iconbtn back" href="#${back||"bonos"}" aria-label="Volver a bonos">‹</a></div>`}
+V.atiempo=()=>{setAcc(0);return bonoHero(0)+`<div class="wrap"><div class="head"><span class="eyebrow">Bono 1</span><h1>Todavía estás a tiempo</h1></div>
+ ${D.atiempo.map((s,i)=>`<div class="section"><span class="eyebrow" style="color:var(--muted)">${i+1} de ${D.atiempo.length}</span><h2>${esc(s[0])}</h2>${s[1].map((p,j)=>`<p class="${i===0&&j===1?"lead":""}">${esc(p)}</p>`).join("")}</div>`).join("")}
+ <div class="section"><div class="card stack">${labeled("Uno · Algo que dejé para «algún día»","atiempo.a","")}${labeled("Dos · El mes en que lo empiezo","atiempo.b","Ej.: marzo")}${labeled("Tres · Mi acción más pequeña esta semana","atiempo.c","",{area:true})}</div></div>
+ <div class="section"><span class="label">Frases para volver a leer</span><div class="affirm" id="affirm">${esc(D.afirm[0])}</div><button class="btn ghost" id="nextAff">Otra frase</button></div>
+ <div class="section"><a class="btn acc" href="#metas">Siguiente bono · Metas y sueños</a></div></div>`};
+V.metas=()=>{setAcc(1);const g=S.goals;const done=g.filter(x=>x&&x.ok).length,started=g.filter(x=>x&&x.meta).length;
+ return bonoHero(1)+`<div class="wrap"><div class="head"><span class="eyebrow">Bono 2</span><h1>Metas y sueños 2027</h1><p class="muted" style="margin:0">${started?`${started} metas en marcha · ${done} cumplidas`:"Primero sueña en grande. Después elige y ponle fecha."}</p></div>
+ <div class="section"><h2>Mis sueños</h2><p class="muted small" style="margin:0">Sin filtro: todo lo que te gustaría vivir, aprender o tener.</p><div class="card">${numList("dreams",10,"")}</div></div>
+ <div class="section"><h2>Mis fichas de meta</h2><p class="muted small" style="margin:0">Una por cada sueño que elijas para este año.</p>
+ ${[0,1,2,3,4].map(i=>{const x=g[i]||{};const p=`goals.${i}`;return `<details class="goal" ${i===0&&!x.meta?"open":""}><summary><span class="gi">${i+1}</span><span class="gt">${esc(x.meta||"Meta "+(i+1))}</span><span class="gs ${x.ok?"ok":""}">${x.ok?"Cumplida":x.meta?"En marcha":"Vacía"}</span></summary><div class="gb">
+ ${D.ficha.map((f,j)=>labeled(f,j===0?`${p}.meta`:`${p}.f${j}`,"",{area:j>0})).join("")}
+ <span class="label">Etapas por trimestre</span><div class="quarters">${["T1 · ene–mar","T2 · abr–jun","T3 · jul–sep","T4 · oct–dic"].map((q,j)=>`<div>${labeled(q,`${p}.q${j}`,"",{area:true})}</div>`).join("")}</div>
+ <label class="ck ${x.ok?"done":""}">${ck(p+".ok",x.ok,"Meta cumplida")}<span>¡La cumplí!</span></label></div></details>`}).join("")}</div></div>`};
+V.tracker=(mm)=>{const f=focusDate();const m=mm!=null&&mm!==""?Number(mm)-1:f.getMonth();setAcc(m);const hs=S.habits;const nd=new Date(YEAR,m+1,0).getDate();
+ let rows="";for(let d=1;d<=nd;d++){const dt=new Date(YEAR,m,d),k=iso(dt);rows+=`<tr class="${dow(dt)>4?"we":""}"><td>${d}</td>${hs.map((h,i)=>h?`<td>${ck(`days.${k}.h.${i}`,!!getP(`days.${k}.h.${i}`),`${h} día ${d}`)}</td>`:"").join("")}</tr>`}
+ const active=hs.filter(Boolean).length;
+ let grat="";for(let d=1;d<=nd;d++){const k=iso(new Date(YEAR,m,d));grat+=`<div class="num"><span>${d}</span>${inp(`days.${k}.g`,"",{label:`Gratitud día ${d}`})}</div>`}
+ return bonoHero(2)+`<div class="wrap"><div class="head"><span class="eyebrow">Bono 3</span><h1>Hábitos y gratitud</h1></div>
+ <div class="section"><h2>Mis hábitos 2027</h2><p class="muted small" style="margin:0">Hasta cinco, conectados con tus metas. Empieza pequeño.</p><div class="card">${numList("habits",5,"Ej.: caminar 20 minutos")}</div></div>
+ <div class="section"><div class="chips" role="tablist">${D.mesCorto.map((c,i)=>`<a class="pill ${i===m?"on":""}" href="#tracker-${i+1}" style="text-transform:capitalize">${c}</a>`).join("")}</div>
+ <h2>${D.meses[m]}</h2>${active?`<div class="grid-wrap"><table class="tk"><thead><tr><th>Día</th>${hs.map(h=>h?`<th title="${esc(h)}">${esc(h.length>9?h.slice(0,8)+"…":h)}</th>`:"").join("")}</tr></thead><tbody>${rows}</tbody></table></div>`:`<p class="muted">Escribe al menos un hábito arriba para ver tu registro del mes.</p>`}</div>
+ <div class="section"><h2>Gratitud de ${D.meses[m].toLowerCase()}</h2><p class="muted small" style="margin:0">Una línea por día. También la ves en la vista de cada día.</p><div class="card">${grat}</div></div></div>`};
+V.rueda=()=>{setAcc(5);return bonoHero(3)+`<div class="wrap"><div class="head"><span class="eyebrow">Bono 4</span><h1>Rueda de la vida</h1><p class="muted" style="margin:0">Puntúa del 1 al 10 cómo estás hoy en cada área y cómo quieres estar en diciembre.</p></div>
+ <div class="section"><div class="card wheel"><svg id="wheel" viewBox="-170 -150 340 300" role="img" aria-label="Tu rueda de la vida"></svg><div class="legend"><span><i style="background:var(--acc)"></i>Hoy</span><span><i style="background:var(--oliva)"></i>En diciembre</span></div></div></div>
+ <div class="section"><h2>Hoy</h2><div class="card">${D.areas.map((a,i)=>slider("wheel",i,a)).join("")}</div>
+ <h2>En diciembre quiero estar en…</h2><div class="card">${D.areas.map((a,i)=>slider("wheelGoal",i,a)).join("")}</div>
+ <div class="card">${labeled("Las áreas donde pondré foco este año","wheelNote","",{area:true})}</div></div></div>`};
+function slider(base,i,a){const v=S[base][i]||5;const id=`r-${base}-${i}`;return `<div class="slider"><label for="${id}">${esc(a)}</label><output id="o-${id}">${S[base][i]||"–"}</output><input type="range" min="1" max="10" step="1" id="${id}" data-k="${base}.${i}" value="${v}"></div>`}
+function drawWheel(){const svg=document.getElementById("wheel");if(!svg)return;const n=D.areas.length,R=105,cs=getComputedStyle(document.documentElement);
+ const pt=(i,r)=>{const a=-Math.PI/2+i*2*Math.PI/n;return [Math.cos(a)*r,Math.sin(a)*r]};
+ let h="";for(let k=2;k<=10;k+=2)h+=`<polygon points="${[...Array(n)].map((_,i)=>pt(i,R*k/10).join(",")).join(" ")}" fill="none" stroke="#D6C8AF" stroke-width="1"/>`;
+ for(let i=0;i<n;i++){const[x,y]=pt(i,R);h+=`<line x1="0" y1="0" x2="${x}" y2="${y}" stroke="#E4D8C3"/>`;const[lx,ly]=pt(i,R+22);const anc=Math.abs(lx)<8?"middle":lx>0?"start":"end";h+=`<text x="${lx}" y="${ly+4}" text-anchor="${anc}" font-size="10.5" fill="#5F574C" font-family="DM Sans,Arial">${esc(D.areas[i].split(" ")[0])}</text>`}
+ const poly=(o,c,op)=>{const vals=[...Array(n)].map((_,i)=>o[i]||0);if(!vals.some(Boolean))return"";return `<polygon points="${vals.map((v,i)=>pt(i,R*v/10).join(",")).join(" ")}" fill="${c}" fill-opacity="${op}" stroke="${c}" stroke-width="2"/>`};
+ h+=poly(S.wheelGoal,"#5E5B26",.12)+poly(S.wheel,cs.getPropertyValue("--acc").trim()||"#163F7A",.25);
+ if(!Object.keys(S.wheel).length)h+=`<text x="0" y="4" text-anchor="middle" font-size="12" fill="#5F574C" font-family="DM Sans,Arial">Mueve las barras de abajo</text>`;
+ svg.innerHTML=h}
+
+/* ---- mi espacio ---- */
+V.mas=()=>{setAcc(1);return `<div class="wrap"><div class="head" style="padding-top:26px"><span class="eyebrow" style="color:var(--muted)">Mi espacio</span><h1>Tu agenda, a tu manera</h1></div>
+ <div class="section"><div class="card">${labeled("¿Cómo te llamo?","name","Tu nombre")}</div></div>
+ <div class="section"><div class="list">
+  <a href="#primeras"><span class="ix">✦</span><span class="tt">Mis primeras veces 2027<span class="sub">Doce cosas que harás por primera vez</span></span><span class="chev">›</span></a>
+  <a href="#cierre"><span class="ix">✦</span><span class="tt">Cierre del año<span class="sub">Lo que sí hice en 2027</span></span><span class="chev">›</span></a>
+  <a href="#instalar"><span class="ix">✦</span><span class="tt">Tenerla en mi pantalla de inicio<span class="sub">Ábrela como una app</span></span><span class="chev">›</span></a>
+  <a href="#respaldo"><span class="ix">✦</span><span class="tt">Respaldo de mis notas<span class="sub">Para no perder nada si cambias de teléfono</span></span><span class="chev">›</span></a></div></div>
+ <div class="section"><p class="small muted">Todo lo que escribes se guarda en este teléfono, en este navegador. Nadie más puede verlo.</p></div></div>`};
+V.primeras=()=>{setAcc(0);let h="";for(let i=0;i<12;i++)h+=`<div class="card stack"><div class="num"><span>${pad(i+1)}</span>${inp(`pv.${i}.x`,"Mi primera vez",{label:"Primera vez "+(i+1)})}</div><div class="pair">${inp(`pv.${i}.f`,"Fecha",{label:"Fecha"})}${inp(`pv.${i}.c`,"Cómo me fue",{label:"Cómo me fue"})}</div></div>`;
+ return `<div class="wrap"><div class="head" style="padding-top:18px"><a class="iconbtn" href="#mas" aria-label="Volver">‹</a><span class="eyebrow" style="margin-top:8px">Mis primeras veces 2027</span><h1>Doce cosas que haré por primera vez</h1><p class="muted" style="margin:0">Una por mes. Pueden ser pequeñas: un plato nuevo, una clase, un viaje sola, decir que no.</p></div><div class="section">${h}</div></div>`};
+V.cierre=()=>{setAcc(11);return `<div class="hero short" style="background-image:url(${img("14")});background-position:62% 30%;background-size:220%"><a class="iconbtn back" href="#mas" aria-label="Volver">‹</a></div><div class="wrap"><div class="head"><span class="eyebrow">Cierre del año</span><h1>Lo que sí hice en 2027</h1></div>
+ <div class="section"><div class="card stack">${D.cierre.map((q,i)=>labeled(q,`cierre.${i}`,"",{area:true,rows:3})).join("")}</div><div class="card"><span class="label">Mi lista de «algún día» para 2028</span>${numList("cierre.l",10,"")}</div>
+ <p class="lead">${esc(D.final)}</p><p class="lead">Todavía hay tiempo. <em style="color:var(--oxido)">Y ahora está organizado.</em></p></div></div>`};
+V.instalar=()=>{setAcc(1);return `<div class="wrap"><div class="head" style="padding-top:18px"><a class="iconbtn" href="#mas" aria-label="Volver">‹</a><h1 style="margin-top:8px">Tenerla en tu pantalla de inicio</h1><p class="muted" style="margin:0">Así se abre con su propio ícono, como cualquier app.</p></div>
+ <div class="section"><div class="card stack"><h3>En iPhone (Safari)</h3><ol style="margin:0;padding-left:20px"><li>Abre el enlace de tu agenda en Safari.</li><li>Toca el botón Compartir, el cuadrado con la flecha hacia arriba.</li><li>Elige «Agregar a pantalla de inicio» y toca «Agregar».</li></ol></div>
+ <div class="card stack"><h3>En Android (Chrome)</h3><ol style="margin:0;padding-left:20px"><li>Abre el enlace de tu agenda en Chrome.</li><li>Toca el menú de tres puntos arriba a la derecha.</li><li>Elige «Instalar app» o «Agregar a pantalla de inicio».</li></ol></div>
+ <p class="small muted">Usa siempre el mismo navegador: tus notas se guardan ahí.</p></div></div>`};
+V.respaldo=()=>{setAcc(1);return `<div class="wrap"><div class="head" style="padding-top:18px"><a class="iconbtn" href="#mas" aria-label="Volver">‹</a><h1 style="margin-top:8px">Respaldo de tus notas</h1><p class="muted" style="margin:0">Tus notas viven en este teléfono. Haz un respaldo de vez en cuando, o antes de cambiar de teléfono.</p></div>
+ <div class="section"><div class="card stack"><h3>1 · Copiar mi respaldo</h3><p class="small muted" style="margin:0">Copia todas tus notas como un texto. Pégalo en un mensaje para ti misma, en tu correo o en tus notas.</p><button class="btn acc" id="copyBk">Copiar mi respaldo</button><textarea class="field" id="bkOut" rows="3" readonly aria-label="Texto del respaldo" hidden></textarea></div>
+ <div class="card stack"><h3>2 · Recuperar mis notas</h3><p class="small muted" style="margin:0">Pega aquí el texto de un respaldo y toca Recuperar. Reemplaza lo que hay ahora en este teléfono.</p><textarea class="field" id="bkIn" rows="3" placeholder="Pega aquí tu respaldo" aria-label="Pegar respaldo"></textarea><button class="btn ghost" id="restoreBk">Recuperar</button><p class="small" id="bkMsg" role="status"></p></div></div></div>`};
+
+/* ---- router ---- */
+function route(){const h=(location.hash||"#hoy").slice(1);const m=h.match(/^([a-z]+)(?:-(.+))?$/);let name=m?m[1]:"hoy",arg=m?m[2]:undefined;if(!V[name]){name="hoy";arg=undefined}
+ const v=document.getElementById("view");v.innerHTML=V[name](arg);drawTabs(h);
+ v.querySelectorAll("textarea.field").forEach(grow);drawWheel();window.scrollTo(0,0);
+ const at=document.getElementById("addTask");if(at)at.onclick=()=>{const k=iso(parse(arg)||focusDate());const arr=getP(`days.${k}.t`)||[];arr.push({x:"",d:false});setP(`days.${k}.t`,arr);const box=document.getElementById("tasks");box.insertAdjacentHTML("beforeend",taskRow(k,arr.length-1,{}));box.lastElementChild.querySelector("input.field").focus()};
+ const tb=document.getElementById("tasks");if(tb)tb.onclick=e=>{const b=e.target.closest("[data-del]");if(!b)return;const k=iso(parse(arg));const arr=getP(`days.${k}.t`)||[];arr.splice(Number(b.dataset.del),1);setP(`days.${k}.t`,arr);tb.innerHTML=arr.map((t,i)=>taskRow(k,i,t)).join("")};
+ const na=document.getElementById("nextAff");if(na){let i=0;na.onclick=()=>{i=(i+1)%D.afirm.length;document.getElementById("affirm").textContent=D.afirm[i]}}
+ const cb=document.getElementById("copyBk");if(cb)cb.onclick=()=>{const txt="TODAVIA2027:"+btoa(unescape(encodeURIComponent(JSON.stringify(S))));const out=document.getElementById("bkOut");out.value=txt;out.hidden=false;
+   (navigator.clipboard?navigator.clipboard.writeText(txt):Promise.reject()).then(()=>{cb.textContent="Copiado. Pégalo donde quieras guardarlo"}).catch(()=>{out.select();cb.textContent="Mantén presionado el texto de abajo para copiarlo"})};
+ const rb=document.getElementById("restoreBk");if(rb)rb.onclick=()=>{const msg=document.getElementById("bkMsg");try{let t=document.getElementById("bkIn").value.trim();if(t.startsWith("TODAVIA2027:"))t=t.slice(12);const o=JSON.parse(decodeURIComponent(escape(atob(t))));if(!o||typeof o!=="object"||!o.days)throw 0;S=o;for(const k in def)if(S[k]===undefined)S[k]=JSON.parse(JSON.stringify(def[k]));save();msg.textContent="Listo: recuperamos tus notas."}catch(e){msg.textContent="Ese texto no es un respaldo válido. Revisa que lo hayas pegado completo."}};
+ document.title=name==="hoy"?"Todavía 2027":`${document.getElementById("view").querySelector("h1")?.textContent||""} · Todavía 2027`;
+}
+window.addEventListener("hashchange",route);route();
+})();
+</script>
+
+<script>if("serviceWorker" in navigator){addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}))}</script>
+</body></html>
