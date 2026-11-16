@@ -174,16 +174,8 @@ a { color: var(--cta); text-underline-offset: .18em; }
   padding: 4.5rem var(--gutter) 3.5rem;
   display: grid; gap: 2.25rem;
 }
-.story-photo { margin: 0; width: 70%; max-width: 360px; }
-.photo-slot {
-  position: relative; aspect-ratio: 4 / 5; overflow: hidden;
-  background: var(--papel-2);
-  border: 1px solid rgba(168, 138, 85, .55);
-  outline: 1px solid rgba(168, 138, 85, .35); outline-offset: 6px;
-  display: grid; place-items: end start;
-}
-.photo-slot img { position: absolute; width: 120%; max-width: none; right: -40%; top: -10%; opacity: .25; transform: rotate(-12deg); }
-.photo-slot span { position: relative; font: italic 500 1.15rem var(--serif); color: var(--suave); padding: 1rem 1.2rem; }
+.story-art { margin: 0 0 -1rem auto; width: 62%; max-width: 380px; }
+.story-art img { transform: rotate(-10deg); }
 .story-text { max-width: 34rem; font-size: 1.125rem; }
 .story-text p em { font-family: var(--serif); font-size: 1.3em; line-height: 1.3; color: var(--tinta); }
 .signature { font: italic 500 1.6rem/1 var(--serif); color: var(--cta); margin-top: 1.5rem; }
@@ -328,7 +320,7 @@ a { color: var(--cta); text-underline-offset: .18em; }
   .gift-list { grid-template-columns: 1fr 1fr; }
   .gift-list .gift:nth-child(even) { margin-top: 3rem; }
   .story { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); align-items: center; }
-  .story-photo { width: 100%; }
+  .story-art { width: 100%; margin: 0; }
 }
 
 /* ---------- escritorio ---------- */
@@ -347,7 +339,7 @@ a { color: var(--cta); text-underline-offset: .18em; }
   .mock { width: 74%; margin-left: 18%; }
 
   .story { padding-top: 6rem; padding-bottom: 6rem; grid-template-columns: minmax(0, 4fr) minmax(0, 6fr); gap: 5rem; }
-  .story-photo { margin-left: 8%; }
+  .story-art { margin-left: 4%; }
 
   .product { padding-top: 6.5rem; }
   .product-head { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); column-gap: 4rem; }
