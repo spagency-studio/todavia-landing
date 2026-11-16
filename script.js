@@ -3,7 +3,7 @@
   'use strict';
 
   // ====== CONFIGURACIÓN: edita solo estas líneas ======
-  var CHECKOUT_URL = '[LINK DE CHECKOUT]';      // p. ej. https://pay.hotmart.com/XXXX
+  var CHECKOUT_URL = '[LINK DE CHECKOUT]';      // link de pago de Hotmart, p. ej. https://pay.hotmart.com/A12345678B
   var LAUNCH_PRICE = 5;
   var REGULAR_PRICE = 10;
   // El lanzamiento termina al final del 31/12/2026 (hora de Ciudad de México, la más occidental de las grandes ciudades de la región).
@@ -26,7 +26,10 @@
   var buttons = document.querySelectorAll('.js-buy');
   buttons.forEach(function (a) {
     if (hasCheckout) {
-      a.href = CHECKOUT_URL;
+      // Pasa los parámetros de la campaña (utm_*, fbclid…) a Hotmart para no perder la atribución
+      var url = new URL(CHECKOUT_URL);
+      new URLSearchParams(location.search).forEach(function (v, k) { if (!url.searchParams.has(k)) url.searchParams.set(k, v); });
+      a.href = url.toString();
       a.rel = 'noopener';
     }
     a.addEventListener('click', function () {
